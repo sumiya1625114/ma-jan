@@ -1,6 +1,6 @@
 # ma-jan
 
-![png](https://github.com/)
+![png](https://github.com/sumiya1625114/ma-jan/blob/main/img/sample/sample.png)
 
 ## Overview
 
