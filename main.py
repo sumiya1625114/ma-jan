@@ -1483,7 +1483,7 @@ def riichi_select(name):
             name.tumohai = 0            
 
         #各フラグ更新処理
-        name.riichi_flg = False
+        name.riichi_flg = True
         name.riichi_sengenpai = len(name.list_sutehai)-1
         furiten_check(name)        
 
