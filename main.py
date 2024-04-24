@@ -772,34 +772,20 @@ def sute_player(input):
     sutebtn_del()
 
     #各候補を実際の捨て牌/待ち牌に格納
-    tehai = list()
-    tehai = player.list_tehai.copy()
-    tflg = 0
+    if input == 14:
+        p = player.tumohai
+    else:
+        p = player.list_tehai[input - 1]
 
-    for i in range(len(player.sutekouho)): #捨て候補にあるか確認
-        if input == 14:
-            if player.tumohai == player.sutekouho[i]:
-                tflg = 1
-        else:
-            if tehai[input-1] == player.sutekouho[i]:
-                tflg = 1
-    
-    if tflg == 1:
-        if input == 14:
-            player.sute = player.tumohai
-        else:
-            player.sute = tehai[input-1]
-
-        for i in range(len(player.sutekouho)):
-            if player.sutekouho[i] == player.sute:
-                cur = i
-        player.mati = copy.deepcopy(player.matikouho[cur])
+    mati_check(p)
 
     #テスト用
-    #print("--")
-    #print(player.sute)
-    #print(player.mati)
-    #print("--")
+    print("--")
+    print(player.sute)
+    print(player.mati)
+    print(player.sutekouho)
+    print(player.matikouho)
+    print("--")
 
         
 
@@ -1621,17 +1607,8 @@ def kan_main(name,kflg,result_kan): #kflg 2minkan 3ankan 4kakan
             name.tumohai = 0
     
     #各候補を実際の捨て牌/待ち牌に格納
-    tflg = 0
-    for i in range(len(player.sutekouho)): #捨て候補にあるか確認
-        if p == player.sutekouho[i]:
-            tflg = 1
-    
-    if tflg == 1 and (kflg == 3 or kflg == 4):
-        player.sute = p
-        for i in range(len(player.sutekouho)):
-            if player.sutekouho[i] == player.sute:
-                cur = i
-        player.mati = copy.deepcopy(player.matikouho[cur])    
+    if kflg == 3 or kflg == 4:
+        mati_check(p)
 
     #表示更新
     ripai(name)
@@ -1642,6 +1619,22 @@ def kan_main(name,kflg,result_kan): #kflg 2minkan 3ankan 4kakan
     rinsyan_tumo(player)
     pass
 
+#待ち牌の確認と更新
+def mati_check(pai): #引数　切った牌/加カン暗カンした牌
+    same_flg = 0
+    cur = 0
+    for i in range(len(player.sutekouho)): #捨て候補にあるか確認
+        if pai == player.sutekouho[i]:
+            same_flg = 1
+            cur = i
+    
+    if same_flg == 1: #あったら待ちに格納
+        player.sute = pai
+        player.mati = copy.deepcopy(player.matikouho[cur])   
+    else: #無ければ初期化
+        player.sute = 0
+        player.mati = list() 
+
 #tenpai_check
 def tenpai_check(name):
     name.mentsu = list() #メンツ候補の初期化
@@ -1650,7 +1643,10 @@ def tenpai_check(name):
 
     tehai = list()
     tehai = name.list_tehai.copy()
-    tehai.extend([name.tumohai])    
+
+    if name.tumohai != 0: #ツモがないときは入れない　※99は入れる
+        tehai.extend([name.tumohai])   
+
     tehai.sort()
 
     tempatama = list()
@@ -2146,17 +2142,7 @@ def tenpai_check_syokai(name): #初回のみ配牌時点でのテンパイ確認
     name.tumohai = 0
 
     #各候補を実際の捨て牌/待ち牌に格納
-    tflg = 0
-    for i in range(len(player.sutekouho)): #捨て候補にあるか確認
-        if 99 == player.sutekouho[i]:
-            tflg = 1
-    
-    if tflg == 1:
-        player.sute = 99
-        for i in range(len(player.sutekouho)):
-            if player.sutekouho[i] == player.sute:
-                cur = i
-        player.mati = copy.deepcopy(player.matikouho[cur])
+    mati_check(99)
 
 #対局の一連の処理
 def taikyoku():
