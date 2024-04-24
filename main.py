@@ -127,7 +127,7 @@ def reset_btn():
     btn_reset.place(x=0,y=0)
 
 #打牌キーの表示
-def sutebtn_hyouji():
+def sutebtn_disp():
     global window
     global sutebtn
 
@@ -141,7 +141,7 @@ def sutebtn_hyouji():
         sutebtn[13].place(x=725,y=455) #リーチ後
 
 #ドラ表示牌の描画
-def dora_hyouji():
+def dora_disp():
     global window
     global canvas_dora
     global kan_cnt
@@ -182,7 +182,7 @@ def dora_hyouji():
         canvas_dora.create_image(1 + (21 * i ), 1, image=img_list_dora[i], anchor=tkinter.NW)
 
 #手牌の描画
-def tehai_hyouji():
+def tehai_disp():
     global window
     global canvas_tehai1,canvas_tehai2,canvas_tehai3,canvas_tehai4,canvas_tehai5,canvas_tehai6,canvas_tehai7
     global canvas_tehai8,canvas_tehai9,canvas_tehai10,canvas_tehai11,canvas_tehai12,canvas_tehai13,canvas_tehai14
@@ -371,7 +371,7 @@ def tehai_hyouji():
         canvas_tehai14.create_image(30, 40, image=img_player_tumohai, anchor=tkinter.CENTER)
 
 #河の描画
-def kawa_hyouji():
+def kawa_disp():
     global window
     global canvas_center
     global canvas_com1_tehai,canvas_com2_tehai,canvas_com3_tehai
@@ -684,7 +684,7 @@ def tumo(name):
     yama_cur += 1
     name.furiten_minogashi_flg = 0 #同順内見逃しフリテンフラグのリセット
 
-    tehai_hyouji()
+    tehai_disp()
     tenpai_check(name) #テンパイの確認
 
     if name == player:
@@ -711,8 +711,8 @@ def rinsyan_tumo(name):
     rinsyan_cur += 1
     kan_cnt += 1
 
-    tehai_hyouji()
-    dora_hyouji()
+    tehai_disp()
+    dora_disp()
     tenpai_check(name) #テンパイの確認
 
     if name == player:
@@ -747,7 +747,7 @@ def sute(name):
         name.list_sutehai.append(name.tumohai)
         name.tumohai = 0
         ripai(name)
-        kawa_hyouji()
+        kawa_disp()
         furiten_check(name)
 
         n = naki_check(player,name) #playerが鳴くか確認 (鳴く人,捨てた人)
@@ -763,7 +763,7 @@ def sute(name):
         pass           
 
     else:
-        sutebtn_hyouji()
+        sutebtn_disp()
 
         
 #捨て処理（プレイヤー）
@@ -795,14 +795,22 @@ def sute_player(input):
                 cur = i
         player.mati = copy.deepcopy(player.matikouho[cur])
 
+    #テスト用
+    #print("--")
+    #print(player.sute)
+    #print(player.mati)
+    #print("--")
+
+        
+
     #鳴き後の処理かツモ後か判断
     if player.tumohai != 0: #ツモ後
         if input == 14:
             player.list_sutehai.append(player.tumohai)
             player.tumohai = 0
             ripai(player)
-            tehai_hyouji()
-            kawa_hyouji()
+            tehai_disp()
+            kawa_disp()
             furiten_check(player)
             turnp(nextp(player))
         else:
@@ -810,16 +818,16 @@ def sute_player(input):
             player.list_tehai[input - 1] = player.tumohai
             player.tumohai = 0
             ripai(player)
-            tehai_hyouji()
-            kawa_hyouji()
+            tehai_disp()
+            kawa_disp()
             furiten_check(player)
             turnp(nextp(player))
     else: #鳴き後
         player.list_sutehai.append(player.list_tehai[input - 1])
         del player.list_tehai[input - 1] #切った牌を手牌から削除
         ripai(player)
-        tehai_hyouji()
-        kawa_hyouji()
+        tehai_disp()
+        kawa_disp()
         furiten_check(player)
         turnp(nextp(player))
 
@@ -868,6 +876,10 @@ def messege(type):
     elif type == 2: #和了
         text = tkinter.Label(text="和了",font=("Helvetica",15))
         text.place(x=70,y=45)
+    elif type == 99: #テスト用
+        str_mati = str(player.mati)
+        text = tkinter.Label(text=str_mati,font=("Helvetica",15))
+        text.place(x=70,y=55)
     else:
         pass
 
@@ -975,7 +987,6 @@ def canv_del():
     canvas_com3_tehai.destroy()
 
     global text
-    text.place_forget()
     text.destroy()
 
 #naki_check 戻り値 (flg,result_pon,result_tii,result_kan)
@@ -1102,17 +1113,17 @@ def naki_btn(name,nflg,result_pon,result_tii,result_kan):
 
     if nflg == 1:
         if len(result_pon) > 0:
-            ponbtn_hyouji(name,result_pon)
+            ponbtn_disp(name,result_pon)
         if len(result_tii) > 0:
-            tiibtn_hyouji(name,result_tii)
+            tiibtn_disp(name,result_tii)
         if len(result_kan) > 0:
-            kanbtn_hyouji(name,result_kan)
+            kanbtn_disp(name,result_kan)
         if rflg == 1:
-            ronbtn_hyouji(name) #name:捨てた人
-        skipbtn_hyouji(name)
+            ronbtn_disp(name) #name:捨てた人
+        skipbtn_disp(name)
     elif rflg == 1:
-        ronbtn_hyouji(name)
-        skipbtn_hyouji(name)
+        ronbtn_disp(name)
+        skipbtn_disp(name)
     else:
         turnp(nextp(name))
     pass
@@ -1120,12 +1131,12 @@ def naki_btn(name,nflg,result_pon,result_tii,result_kan):
 #nakip_btn #プレイヤーのツモ番
 def nakip_btn(name,result_ankan,result_kakan):
     if len(result_ankan) + len(result_kakan) > 0 and name.riichi_flg == 0: #カン/カン候補あるか(and リーチ後不可)
-        ankanbtn_hyouji(name,result_ankan,result_kakan)
+        ankanbtn_disp(name,result_ankan,result_kakan)
     if atarihai_check(name,name.tumohai) >= 1: #ツモ/あたり牌か
         if atarihai_check(name,name.tumohai) == 2 or menzen_check(name) == 1: #役なしかつ鳴いてたら不可
-            tumobtn_hyouji(name)
+            tumobtn_disp(name)
     if menzen_check(name) == 1 and len(name.sutekouho) > 0 and name.riichi_flg == 0: #リーチ/面前かつ捨て候補がある(and リーチ後不可)
-        riichibtn_hyouji(name)
+        riichibtn_disp(name)
     pass
 
 #atarihai_check
@@ -1144,8 +1155,8 @@ def menzen_check(name): #面前なら1
             menzen_flg = 0
     return menzen_flg
 
-#ponbtn_hyouji
-def ponbtn_hyouji(name,result_pon):
+#ponbtn_disp
+def ponbtn_disp(name,result_pon):
     global window,ponbtn
     def pon_click():
         nakibtn_del()
@@ -1167,8 +1178,8 @@ def ponbtn_hyouji(name,result_pon):
     exec(code)
     pass
 
-#tiibtn_hyouji
-def tiibtn_hyouji(name,result_tii):
+#tiibtn_disp
+def tiibtn_disp(name,result_tii):
     global window,tiibtn
     def tii_click():
         nakibtn_del()
@@ -1196,8 +1207,8 @@ def tiibtn_hyouji(name,result_tii):
 
     pass
 
-#kanbtn_hyouji
-def kanbtn_hyouji(name,result_kan):
+#kanbtn_disp
+def kanbtn_disp(name,result_kan):
     global window,kanbtn
     def kan_click():
         nakibtn_del()
@@ -1220,8 +1231,8 @@ def kanbtn_hyouji(name,result_kan):
     exec(code)
     pass
 
-#ankanbtn_hyouji
-def ankanbtn_hyouji(name,result_ankan,result_kakan):
+#ankanbtn_disp
+def ankanbtn_disp(name,result_ankan,result_kakan):
     global window,kanbtn
     def kan_click():
         sutebtn_del() #捨てボタンも消す
@@ -1240,8 +1251,8 @@ def ankanbtn_hyouji(name,result_ankan,result_kakan):
     kanbtn.place(x=550,y=340)
     pass
 
-#riichibtn_hyouji
-def riichibtn_hyouji(name):
+#riichibtn_disp
+def riichibtn_disp(name):
     global window,riichibtn
     def riichi_click():
         sutebtn_del() #捨てボタンも消す
@@ -1252,8 +1263,8 @@ def riichibtn_hyouji(name):
     riichibtn.place(x=600,y=250)
     pass
 
-#tumobtn_hyouji
-def tumobtn_hyouji(name):
+#tumobtn_disp
+def tumobtn_disp(name):
     global window,tumobtn
     def tumo_click():
         sutebtn_del() #捨てボタンも消す
@@ -1264,8 +1275,8 @@ def tumobtn_hyouji(name):
     tumobtn.place(x=600,y=280)
     pass
 
-#ronbtn_hyouji
-def ronbtn_hyouji(name):
+#ronbtn_disp
+def ronbtn_disp(name):
     global window,ronbtn
     player.furiten_minogashi_flg = 1 #見逃しフラグ
 
@@ -1290,12 +1301,12 @@ def ronbtn_hyouji(name):
     ronbtn.place(x=600,y=310)
     pass
 
-#skipbtn_hyouji
-def skipbtn_hyouji(name):
+#skipbtn_disp
+def skipbtn_disp(name):
     global window,skipbtn
     def skip_click():
         nakibtn_del()
-        kawa_hyouji()
+        kawa_disp()
         turnp(nextp(name))
         
     skipbtn = tkinter.Button(window, text="skip",height=1, width=5,command=skip_click)
@@ -1321,8 +1332,8 @@ def pon_main(name,result_pon):
     tenpai_check(player) #テンパイの確認
     
     #表示更新
-    tehai_hyouji()
-    kawa_hyouji()
+    tehai_disp()
+    kawa_disp()
 
     #suteへ移動
     sute(player)
@@ -1492,8 +1503,8 @@ def riichi_select(name):
 
         #次のプレイヤーへ
         ripai(name)
-        tehai_hyouji()
-        kawa_hyouji()
+        tehai_disp()
+        kawa_disp()
         turnp(nextp(name))
         pass
 
@@ -1535,8 +1546,8 @@ def tii_main(name,result_tii):
     tenpai_check(player) #テンパイの確認
     
     #表示更新
-    tehai_hyouji()
-    kawa_hyouji()
+    tehai_disp()
+    kawa_disp()
 
     #suteへ移動
     sute(player)
@@ -1624,8 +1635,8 @@ def kan_main(name,kflg,result_kan): #kflg 2minkan 3ankan 4kakan
 
     #表示更新
     ripai(name)
-    tehai_hyouji()
-    kawa_hyouji()
+    tehai_disp()
+    kawa_disp()
 
     #嶺上ツモへ移動
     rinsyan_tumo(player)
@@ -1664,8 +1675,8 @@ def tenpai_check(name):
     
     #頭あり順子優先検索
     for i in range(len(temptehai)): 
-        sr = syu_serch(temptehai[i])
-        kr = ko_serch(sr[1])
+        sr = syu_search(temptehai[i])
+        kr = ko_search(sr[1])
         tempsyuntsu = sr[0]
         tempkotsu = kr[0]
         tempuki = kr[1]
@@ -1680,8 +1691,8 @@ def tenpai_check(name):
     
     #頭あり刻子優先検索
     for i in range(len(temptehai)): 
-        kr = ko_serch(temptehai[i])
-        sr = syu_serch(kr[1])
+        kr = ko_search(temptehai[i])
+        sr = syu_search(kr[1])
         tempsyuntsu = sr[0]
         tempkotsu = kr[0]
         tempuki = sr[1]
@@ -1695,8 +1706,8 @@ def tenpai_check(name):
         m_cur += 1
     
     #頭なし順子優先検索
-    sr = syu_serch(tehai)
-    kr = ko_serch(sr[1])
+    sr = syu_search(tehai)
+    kr = ko_search(sr[1])
     tempsyuntsu = sr[0]
     tempkotsu = kr[0]
     tempuki = kr[1]
@@ -1710,8 +1721,8 @@ def tenpai_check(name):
     m_cur += 1
 
     #頭なし刻子優先検索
-    kr = ko_serch(tehai)
-    sr = syu_serch(kr[1])
+    kr = ko_search(tehai)
+    sr = syu_search(kr[1])
     tempsyuntsu = sr[0]
     tempkotsu = kr[0]
     tempuki = sr[1]
@@ -1743,7 +1754,7 @@ def tenpai_check(name):
     #待ちをすべて抽出
     for i in range(len(name.mentsu)): #通常パターン
         if len(name.mentsu[i].uki) != 0:
-            r = mati_serch(name.mentsu[i].uki,name.mentsu[i].syuntsu,name.mentsu[i].atamaflg)
+            r = mati_search(name.mentsu[i].uki,name.mentsu[i].syuntsu,name.mentsu[i].atamaflg)
             sutelist += (r[0])
             matilist += (r[1])
         else: #浮き0パターン
@@ -1755,20 +1766,20 @@ def tenpai_check(name):
                     if j != k: 
                         exsyuntsu.append(name.mentsu[i].syuntsu[k])
                 
-                r = mati_serch_ukinasi(uki,exsyuntsu,name.mentsu[i].atamaflg)
+                r = mati_search_ukinasi(uki,exsyuntsu,name.mentsu[i].atamaflg)
                 sutelist += (r[0])
                 matilist += (r[1])
 
             for j in range(len(name.mentsu[i].kotsu)): #刻子処理
                 uki = name.mentsu[i].kotsu[j] #j番目を浮きとして格納
-                r = mati_serch_ukinasi(uki,name.mentsu[i].syuntsu,name.mentsu[i].atamaflg)
+                r = mati_search_ukinasi(uki,name.mentsu[i].syuntsu,name.mentsu[i].atamaflg)
                 sutelist += (r[0])
                 matilist += (r[1])
 
     #特殊役の処理
     #チートイツ    
     if len(name.nakimentsu) == 0: #チートイは鳴きなし
-        tir = mati_serch_titoi(tehai)
+        tir = mati_search_titoi(tehai)
         if len(tir) == 2: #テンパイ
             sutelist += [tir[0]]
             sutelist += [tir[1]]
@@ -1777,7 +1788,7 @@ def tenpai_check(name):
 
     #国士無双
     if len(name.nakimentsu) == 0: #国士は鳴きなし
-        kor = mati_serch_kokushi(tehai)
+        kor = mati_search_kokushi(tehai)
         if kor:
             sutelist += kor[0]
             matilist += kor[1]
@@ -1818,8 +1829,8 @@ def tenpai_check(name):
 
     pass
 
-#syu_serch
-def syu_serch(tlist): #順子検索
+#syu_search
+def syu_search(tlist): #順子検索
     hailist = tlist.copy()
     tempr = list()
     flg = 0
@@ -1848,8 +1859,8 @@ def syu_serch(tlist): #順子検索
     amari = hailist
     return result,amari #result:二次元配列 amari:一次元配列
 
-#ko_serch
-def ko_serch(tlist): #刻子検索
+#ko_search
+def ko_search(tlist): #刻子検索
     hailist = tlist.copy()
     tempr = list()
     flg = 0
@@ -1876,8 +1887,8 @@ def ko_serch(tlist): #刻子検索
     amari = hailist
     return result,amari
 
-#syu_serch_rev
-def syu_serch_rev(tlist): #順子検索(逆順)
+#syu_search_rev
+def syu_search_rev(tlist): #順子検索(逆順)
     hailist = tlist.copy()
     tempr = list()
     flg = 0
@@ -1906,8 +1917,8 @@ def syu_serch_rev(tlist): #順子検索(逆順)
     amari = hailist
     return result,amari #result:二次元配列 amari:一次元配列
 
-#mati_serch
-def mati_serch(uki,syuntsu,atamaflg): #待ち検索 uki:一次元 syuntsu:二次元
+#mati_search
+def mati_search(uki,syuntsu,atamaflg): #待ち検索 uki:一次元 syuntsu:二次元
     olist = list()
     gara = list()
 
@@ -1936,8 +1947,8 @@ def mati_serch(uki,syuntsu,atamaflg): #待ち検索 uki:一次元 syuntsu:二次
         alist = olist[0:i+1]
         blist = olist[i+1:]
 
-        r1 = syu_serch(alist)
-        r2 = syu_serch(blist)
+        r1 = syu_search(alist)
+        r2 = syu_search(blist)
 
         amari = r1[1] + r2[1] #amariをマージ
         amari.sort()
@@ -1983,8 +1994,8 @@ def mati_serch(uki,syuntsu,atamaflg): #待ち検索 uki:一次元 syuntsu:二次
     
     return sute,mati #mati:二次元
 
-#mati_serch_ukinasi
-def mati_serch_ukinasi(uki,syuntsu,atamaflg): #待ち検索(浮きなし/あがり形) uki:一次元 syuntsu:二次元
+#mati_search_ukinasi
+def mati_search_ukinasi(uki,syuntsu,atamaflg): #待ち検索(浮きなし/あがり形) uki:一次元 syuntsu:二次元
         
     olist = list()
     gara = list()
@@ -2016,14 +2027,14 @@ def mati_serch_ukinasi(uki,syuntsu,atamaflg): #待ち検索(浮きなし/あが�
             blist = olist[i+1:]
 
             if time == 0:
-                r1 = syu_serch(alist)
-                r2 = syu_serch(blist)
+                r1 = syu_search(alist)
+                r2 = syu_search(blist)
             elif time == 1:
-                r1 = syu_serch(alist)
-                r2 = syu_serch_rev(blist)
+                r1 = syu_search(alist)
+                r2 = syu_search_rev(blist)
             elif time == 2:
-                r1 = syu_serch_rev(alist)
-                r2 = syu_serch_rev(blist)
+                r1 = syu_search_rev(alist)
+                r2 = syu_search_rev(blist)
 
             amari = r1[1] + r2[1] #amariをマージ
             amari.sort()
@@ -2072,8 +2083,8 @@ def mati_serch_ukinasi(uki,syuntsu,atamaflg): #待ち検索(浮きなし/あが�
     
     return sute,mati #mati:二次元
 
-#mati_serch_titoi
-def mati_serch_titoi(titehai):
+#mati_search_titoi
+def mati_search_titoi(titehai):
 
     templ = list()
     templ = copy.deepcopy(titehai)
@@ -2089,12 +2100,12 @@ def mati_serch_titoi(titehai):
                 break
     return templ
 
-#mati_serch_kokushi
-def mati_serch_kokushi(kotehai):
+#mati_search_kokushi
+def mati_search_kokushi(kotehai):
     templ = list()
     templ = copy.deepcopy(kotehai)
     yaol = list() #ヤオチュウ牌
-    yaol = [11,19,21,29,31,39,41,42,43,44,45,46,47]
+    yaol = [11,19,21,29,31,39,41,42,43,44,45,46,47] #比較用の国士配列
     sute = list()
     mati = list()
 
@@ -2164,8 +2175,7 @@ def taikyoku():
 
     #テスト用　任意の牌を事前に格納
     #player.list_tehai = list()
-    #player.list_tehai = [15,16,17,19,19,19,27,27,27,28,41,41,41]
-
+    #player.list_tehai = [11,11,11,15,15,15,27,27,27,28,41,41,41]
     #global list_yama
     #list_yama = list()
     #for i in range(137):
@@ -2178,9 +2188,9 @@ def taikyoku():
 
     tenpai_check_syokai(player)
 
-    tehai_hyouji()
-    kawa_hyouji()
-    dora_hyouji()
+    tehai_disp()
+    kawa_disp()
+    dora_disp()
 
     #親からツモ
     turnp(oya_who())
