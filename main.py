@@ -780,12 +780,12 @@ def sute_player(input):
     mati_check(p)
 
     #テスト用
-    print("--")
-    print(player.sute)
-    print(player.mati)
-    print(player.sutekouho)
-    print(player.matikouho)
-    print("--")
+    #print("--")
+    #print(player.sute)
+    #print(player.mati)
+    #print(player.sutekouho)
+    #print(player.matikouho)
+    #print("--")
 
         
 
