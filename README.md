@@ -1,6 +1,6 @@
 # ma-jan
 
-![png](https://github.com/)
+![png](https://github.com/sumiya1625114/ma-jan/blob/main/img/sample/sample.png)
 
 ## Overview
 
@@ -26,6 +26,9 @@ https://mj-king.net/sozai/
 
 ・食い変えの鳴きができてしまう  
 チーで同じ筋切れないように  
+
+・役判定未実装のため役なし和了ができてしまう  
+役判定実装待ち  
 
 ## 実装予定
 
