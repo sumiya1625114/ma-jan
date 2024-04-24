@@ -19,10 +19,10 @@ class person:
         self.sute = 0
         self.mati = list() #待ち牌リスト
         self.yaku = list() #各待ちに役つくかの判定フラグのリスト
-        self.riichi_flg = 0
+        self.riichi_flg = False
         self.riichi_sengenpai = None #リーチ宣言牌の位置
-        self.furiten_sute_flg = 0 #捨て牌によるフリテン
-        self.furiten_minogashi_flg = 0 #見逃しによる同巡内フリテン
+        self.furiten_sute_flg = False #捨て牌によるフリテン
+        self.furiten_minogashi_flg = False #見逃しによる同巡内フリテン
     
     class mentsu: #メンツ候補
         def __init__(self):
@@ -131,7 +131,7 @@ def sutebtn_disp():
     global window
     global sutebtn
 
-    if player.riichi_flg == 0: #通常時
+    if player.riichi_flg == False: #通常時
         for i in range(len(player.list_tehai)):
             sutebtn[i].place(x= 25 +(50*i),y=455)
 
@@ -477,13 +477,13 @@ def kawa_disp():
     global img_r1,img_r2
     img_r1 = tkinter.PhotoImage(file="./img/sonota/r1.png")
     img_r2 = tkinter.PhotoImage(file="./img/sonota/r2.png")
-    if player.riichi_flg == 1:
+    if player.riichi_flg == True:
         canvas_center.create_image(15,95,image=img_r2,anchor=tkinter.NW) #p1
-    if com1.riichi_flg == 1:
+    if com1.riichi_flg == True:
         canvas_center.create_image(93,15,image=img_r1,anchor=tkinter.NW) #p2
-    if com2.riichi_flg == 1:
+    if com2.riichi_flg == True:
         canvas_center.create_image(15,3,image=img_r2,anchor=tkinter.NW) #p3
-    if com3.riichi_flg == 1:
+    if com3.riichi_flg == True:
         canvas_center.create_image(3,15,image=img_r1,anchor=tkinter.NW) #p4
     #捨て牌表示
     global img_list_player_kawa
@@ -682,7 +682,7 @@ def tumo(name):
     x=list_yama[yama_cur]
     name.tumohai=x
     yama_cur += 1
-    name.furiten_minogashi_flg = 0 #同順内見逃しフリテンフラグのリセット
+    name.furiten_minogashi_flg = False #同順内見逃しフリテンフラグのリセット
 
     tehai_disp()
     tenpai_check(name) #テンパイの確認
@@ -701,7 +701,7 @@ def tumo(name):
 #嶺上ツモ処理
 def rinsyan_tumo(name):
     global rinsyan_cur,kan_cnt
-    name.furiten_minogashi_flg = 0 #同順内見逃しフリテンフラグのリセット
+    name.furiten_minogashi_flg = False #同順内見逃しフリテンフラグのリセット
 
     if rinsyan_cur <= 1:
         x=list_yama[134 + rinsyan_cur]
@@ -756,7 +756,7 @@ def sute(name):
         result_tii = n[2]
         result_kan = n[3]
 
-        if player.riichi_flg == 1: #リーチ後は鳴けない
+        if player.riichi_flg == True: #リーチ後は鳴けない
             nflg = 0        
             
         naki_btn(name,nflg,result_pon,result_tii,result_kan) #鳴き選択ボタンの表示
@@ -1094,7 +1094,7 @@ def naki_btn(name,nflg,result_pon,result_tii,result_kan):
     rflg = 0 #ロンフラグ
 
     if (atarihai_check(player,name.list_sutehai[-1]) == 2 and
-        player.furiten_sute_flg == 0 and player.furiten_minogashi_flg == 0):
+        player.furiten_sute_flg == False and player.furiten_minogashi_flg == False):
         rflg = 1
 
     if nflg == 1:
@@ -1116,12 +1116,12 @@ def naki_btn(name,nflg,result_pon,result_tii,result_kan):
 
 #nakip_btn #プレイヤーのツモ番
 def nakip_btn(name,result_ankan,result_kakan):
-    if len(result_ankan) + len(result_kakan) > 0 and name.riichi_flg == 0: #カン/カン候補あるか(and リーチ後不可)
+    if len(result_ankan) + len(result_kakan) > 0 and name.riichi_flg == False: #カン/カン候補あるか(and リーチ後不可)
         ankanbtn_disp(name,result_ankan,result_kakan)
     if atarihai_check(name,name.tumohai) >= 1: #ツモ/あたり牌か
         if atarihai_check(name,name.tumohai) == 2 or menzen_check(name) == 1: #役なしかつ鳴いてたら不可
             tumobtn_disp(name)
-    if menzen_check(name) == 1 and len(name.sutekouho) > 0 and name.riichi_flg == 0: #リーチ/面前かつ捨て候補がある(and リーチ後不可)
+    if menzen_check(name) == 1 and len(name.sutekouho) > 0 and name.riichi_flg == False: #リーチ/面前かつ捨て候補がある(and リーチ後不可)
         riichibtn_disp(name)
     pass
 
@@ -1264,7 +1264,7 @@ def tumobtn_disp(name):
 #ronbtn_disp
 def ronbtn_disp(name):
     global window,ronbtn
-    player.furiten_minogashi_flg = 1 #見逃しフラグ
+    player.furiten_minogashi_flg = True #見逃しフラグ
 
     def ron_click():
         nakibtn_del()
@@ -1301,7 +1301,7 @@ def skipbtn_disp(name):
 
 #pon_main
 def pon_main(name,result_pon):
-    player.furiten_minogashi_flg = 0 #見逃しフラグリセット
+    player.furiten_minogashi_flg = False #見逃しフラグリセット
 
     #鳴き用手牌に格納
     player.nakitya.append(name)
@@ -1483,7 +1483,7 @@ def riichi_select(name):
             name.tumohai = 0            
 
         #各フラグ更新処理
-        name.riichi_flg = 1
+        name.riichi_flg = False
         name.riichi_sengenpai = len(name.list_sutehai)-1
         furiten_check(name)        
 
@@ -1510,11 +1510,11 @@ def furiten_check(name):
     for i in range(len(name.mati)):
         for j in range(len(name.list_sutehai)):
             if name.mati[i] == name.list_sutehai[j]:
-                name.furiten_sute_flg = 1
+                name.furiten_sute_flg = True
 
 #tii_main
 def tii_main(name,result_tii):
-    player.furiten_minogashi_flg = 0 #見逃しフラグリセット
+    player.furiten_minogashi_flg = False #見逃しフラグリセット
 
     #鳴き用手牌に格納
     player.nakitya.append(name)
